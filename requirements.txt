@@ -1,0 +1,10 @@
+beautifulsoup4==4.11.1
+hepbasestack==0.1.5
+hjson==3.0.2
+numpy==1.21.5
+periodictable==1.6.0
+rich==12.4.4
+setuptools==59.6.0
+tqdm==4.64.0
+trimesh==3.10.8
+vectormath==0.2.2
