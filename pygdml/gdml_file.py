@@ -12,6 +12,17 @@ from collections import defaultdict
 
 from copy import copy
 
+import logging
+LOG = logging
+try:
+    import hepbasestack as hep
+    from . import __package_loglevel__
+    LOG = hep.logger.get_logger(__package_loglevel__)
+    del logging
+except ImportError:
+    LOG.warn("Only rudimentary logging available!")
+    pass
+
 from .gdml_tags import VolumeTag, RotationTag
 
 import dataclasses
@@ -22,6 +33,14 @@ class RegisteredVolume:
     material : str
 import dataclasses
 
+def open_gdml(filepath):
+    """
+    Open a file with Beautiful Soup
+
+    args:
+        filename (str) :
+    """
+    return bs4.BeautifulSoup(open(filepath), features="lxml-xml")
 
 class GdmlFileMinimal(object):
     """
@@ -51,7 +70,7 @@ class GdmlFileMinimal(object):
         self.is_locked = False
         if os.path.exists(filename):
             print(f'Will parse {filename}')
-            self.bs = bs4.BeautifulSoup(open(filename), features="lxml-xml")
+            self.bs = open_gdml(filename)
             self.is_locked = True
         else:
             self.bs = bs4.BeautifulSoup('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>', features='lxml-xml')
@@ -222,7 +241,7 @@ class GdmlFileMinimal(object):
         else:
             raise ValueError(f'Do not understand {symbol}. Has to be of type either str or periodictable.core.Element')
         if element.symbol in self.element_registry:
-            print(f'Element {element.name} already added! Not doing anything')
+            LOG.debug(f'Element {element.name} already added! Not doing anything')
             return
 
         isotopes = element.isotopes

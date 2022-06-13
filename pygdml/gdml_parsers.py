@@ -10,10 +10,21 @@ import numpy as np
 import rich
 import hjson
 
+import logging
+LOG = logging
+try:
+    import hepbasestack as hep
+    from . import __package_loglevel__
+    LOG = hep.logger.get_logger(__package_loglevel__)
+    del logging
+except ImportError:
+    pass
 
 from .gdml_solid import GdmlTessellatedSolid
 
 from copy import copy, deepcopy
+
+################################################################
 
 def get_unique_names(tessell_list,
                      metainfo=None,
@@ -96,11 +107,13 @@ def get_unique_names(tessell_list,
 
 ################################################################
 
+
 def is_world(name):
     if name.lower() in ['worldbox', 'world']:
         return True
 
 ################################################################
+
 
 def compare_mesh(a, b):
     """
@@ -111,6 +124,7 @@ def compare_mesh(a, b):
     return sum(vals)
 
 ##################################
+
 
 def extract_tessellated_solids(cursor, \
                                solid_tags_to_write=[], \
@@ -135,9 +149,7 @@ def extract_tessellated_solids(cursor, \
     all_tessell_solids = []
     pbar = tqdm.tqdm(total=nkids)
     while cursor is not None:
-
-        # print (f'Processing {cursor.name}')
-
+        print(cursor.name)
         if cursor.name == 'define':
             # cursor = cursor.findNextSibling()
             # continue
@@ -225,7 +237,7 @@ def extract_tessellated_solids(cursor, \
             # we need to keep the other tags
             # e.g. setup and so on
 
-            print(f'Register {cursor.name} for copy...')
+            LOG.debug(f'Register {cursor.name} for copy...')
             tags_to_write.append(copy(cursor))
         # cleaned_file.write(cursor.decode())
         cursor = cursor.findNextSibling()

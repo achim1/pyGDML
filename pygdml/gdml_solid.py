@@ -9,6 +9,8 @@ import trimesh
 import vectormath as vm
 
 from .gdml_tags import PositionTag, ScaleTag, VolumeTag, TessellatedTag
+from .renormalize_names import normalize_name
+
 
 class GDMLAbstractSolid(object):
     """
@@ -70,8 +72,6 @@ class GdmlBox(GDMLAbstractSolid):
 
 class GdmlTessellatedSolid(GDMLAbstractSolid):
     """
-
-    pass
     A tesselated solid, which can be serialized/deserialized to gdml with
     a <define> and <solid> section.
     """
@@ -118,6 +118,9 @@ class GdmlTessellatedSolid(GDMLAbstractSolid):
         # so that we can use the solid for
         # a different phys volume
         self.volume_ref = None
+
+    def normalize_name(self):
+        self.name = normalize_name(self.name)
 
     @property
     def identifier(self):

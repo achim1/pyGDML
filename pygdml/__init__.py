@@ -13,5 +13,10 @@ This software shell:
 
 """
 
+# default loglevel info
+__package_loglevel__ = 20
+
+def set_package_loglevel(level):
+    __package_loglevel__ = level
 
 __version__ = '0.0.1'
