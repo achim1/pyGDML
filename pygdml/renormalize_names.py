@@ -34,7 +34,12 @@ def normalize_name(name):
     if 'orld' in name:
         return name
     parts = name.split('-')
-    id = parts[-1]
-    parts = ''.join(parts[:-1])
+    if (len(parts) == 1):
+        # there is no "version" number in the name
+        id_number = "NA"
+        parts = parts[0]
+    else:
+        id_number = parts[-1]
+        parts = ''.join(parts[:-1])
     parts = remove_invalid(parts)
-    return parts + f'__uid{id}'
+    return parts + f'__uid{id_number}'
