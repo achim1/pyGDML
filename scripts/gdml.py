@@ -297,11 +297,20 @@ if __name__ == '__main__':
         if not ts.nvertices:
             empties += 1
             continue
-        ts.remove_invalid_triangles()
+
+        # in some cases, it can be that the world solid
+        # appears in the list of tessell solids as well.
+        # in that case it has a single vertice
+        if ts.nvertices == 1:
+            print (f'Not fixing triangles for single vertex solid {ts, ts.name}')
+        else:
+            ts.remove_invalid_triangles()
     
         bs.gdml.append(ts.create_define_tag())
-        bs.gdml.append(ts.create_solid_tag(no_name_change=True))
-    
+        try:
+            bs.gdml.append(ts.create_solid_tag(no_name_change=True))
+        except Exception as e:
+            print ("Can not create solid tag!! Exception {e}") 
         #print (f'Saw {ts.ntriangles} triangles and {ts.ninvalidtri} invalid triangles')
         #print (f'There were {empties} empty vertices which were not processed!')
     
